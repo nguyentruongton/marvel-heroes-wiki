@@ -9,14 +9,21 @@ import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import SearchAppBar from "../components/SearchAppBar";
 import Footer from "../components/Footer";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 
 export default function Home() {
+    // const { token } = useStateContext();
+    // if (token) {
+    //     return <Navigate to="/home" />;
+    // }
+
     const navigate = useNavigate();
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />

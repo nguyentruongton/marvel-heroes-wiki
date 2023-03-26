@@ -3,27 +3,44 @@ import Avatar from "@mui/material/Avatar";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
 import Box from "@mui/material/Box";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { useRef } from "react";
+import axiosClient from "../axios-client";
+import { useStateContext } from "../contexts/ContextProvider";
+import { useNavigate, Navigate } from "react-router-dom";
 
 const theme = createTheme();
 
 export default function Login() {
-    const handleSubmit = (event) => {
+    const navigate = useNavigate();
+    const emailRef = useRef();
+    const passwordRef = useRef();
+    const { token, setUser, setToken } = useStateContext();
+
+    const handleLogin = async (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            username: data.get("username"),
-            password: data.get("password"),
-        });
+        const payload = {
+            email: emailRef.current.value,
+            password: passwordRef.current.value,
+        };
+        await axiosClient
+            .post("/login", payload)
+            .then(({ data }) => {
+                setUser(data.user);
+                setToken(data.token);
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
+
+    if (token) {
+        navigate("/admin");
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -43,43 +60,32 @@ export default function Login() {
                     <Typography component="h1" variant="h5">
                         Đăng nhập
                     </Typography>
-                    <Box
-                        component="form"
-                        onSubmit={handleSubmit}
-                        noValidate
-                        sx={{ mt: 1 }}
-                    >
+                    <Box sx={{ mt: 1 }}>
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            id="username"
-                            label="Username"
-                            name="username"
-                            autoComplete="username"
+                            label="Email"
+                            autoComplete="email"
                             autoFocus
+                            inputRef={emailRef}
                         />
                         <TextField
                             margin="normal"
                             required
                             fullWidth
-                            name="password"
                             label="Password"
                             type="password"
-                            id="password"
                             autoComplete="current-password"
-                        />
-                        <FormControlLabel
-                            control={
-                                <Checkbox value="remember" color="primary" />
-                            }
-                            label="Remember me"
+                            inputRef={passwordRef}
                         />
                         <Button
-                            type="submit"
+                            disableElevation
+                            onClick={handleLogin}
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{ mt: 3, mb: 2, borderRadius: 10 }}
+                            size="large"
                         >
                             Đăng nhập
                         </Button>

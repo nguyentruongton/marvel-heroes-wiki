@@ -3,6 +3,7 @@ import Login from "./views/Login";
 import Detail from "./views/Detail";
 import NotFound from "./views/NotFound";
 import Home from "./views/Home";
+import Admin from "./views/Admin";
 
 const router = createBrowserRouter([
     {
@@ -12,6 +13,10 @@ const router = createBrowserRouter([
     {
         path: "/login",
         element: <Login />,
+    },
+    {
+        path: "/admin",
+        element: <Admin />,
     },
     {
         path: "/detail",
