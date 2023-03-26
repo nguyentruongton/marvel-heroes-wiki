@@ -1,4 +1,4 @@
-import * as React from "react";
+import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
@@ -11,18 +11,35 @@ import SearchAppBar from "../components/SearchAppBar";
 import Footer from "../components/Footer";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useStateContext } from "../contexts/ContextProvider";
+import Pagination from "@mui/material/Pagination";
+import axiosClient from "../axios-client";
 
 const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 const theme = createTheme();
 
 export default function Home() {
-    // const { token } = useStateContext();
-    // if (token) {
-    //     return <Navigate to="/home" />;
-    // }
-
     const navigate = useNavigate();
+    const [heros, setHeros] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [detail, setDetail] = useState(false);
+
+    useEffect(() => {
+        getHeros();
+    }, []);
+
+    const getHeros = () => {
+        setLoading(true);
+        axiosClient
+            .get("/heros")
+            .then(({ data }) => {
+                setLoading(false);
+                setHeros(data.data);
+            })
+            .catch(() => {
+                setLoading(false);
+            });
+    };
 
     return (
         <ThemeProvider theme={theme}>
@@ -70,19 +87,21 @@ export default function Home() {
                         </Stack>
                     </Container>
                 </Box> */}
-                <Container sx={{ py: 8 }} maxWidth="md">
+                <Container sx={{ py: 4 }} maxWidth="md">
                     <Grid container spacing={4}>
-                        {cards.map((card) => (
-                            <Grid item key={card} xs={12} sm={6} md={4}>
+                        {heros.map((hero) => (
+                            <Grid item key={hero.id} xs={12} sm={6} md={4}>
                                 <Card
                                     className="flex flex-col h-full rounded-xl hover:rounded-3xl duration-150 ease-linear transition-all cursor-pointer"
                                     variant="outlined"
-                                    onClick={() => navigate("/detail")}
+                                    onClick={() =>
+                                        navigate(`/detail/${hero.id}`)
+                                    }
                                 >
                                     <CardMedia
                                         component="img"
-                                        image="https://source.unsplash.com/random"
-                                        alt="random"
+                                        image={hero.avatar}
+                                        alt="avatar-hero"
                                     />
                                     <CardContent sx={{ flexGrow: 1 }}>
                                         <Typography
@@ -90,12 +109,10 @@ export default function Home() {
                                             variant="h5"
                                             component="h2"
                                         >
-                                            Heading
+                                            {hero.alias}
                                         </Typography>
-                                        <Typography>
-                                            This is a media card. You can use
-                                            this section to describe the
-                                            content.
+                                        <Typography className="truncate">
+                                            {hero.description}
                                         </Typography>
                                     </CardContent>
                                 </Card>
@@ -103,6 +120,10 @@ export default function Home() {
                         ))}
                     </Grid>
                 </Container>
+                {/* Phân trang */}
+                <div className="flex justify-center align-center mb-10">
+                    <Pagination count={10} />
+                </div>
             </main>
             <Footer />
         </ThemeProvider>

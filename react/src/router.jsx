@@ -4,11 +4,18 @@ import Detail from "./views/Detail";
 import NotFound from "./views/NotFound";
 import Home from "./views/Home";
 import Admin from "./views/Admin";
+import HeroForm from "./views/HeroForm";
+import TableHero from "./components/TableHero";
+import CreateHero from "./views/CreateHero";
 
 const router = createBrowserRouter([
     {
         path: "/",
         element: <Home />,
+    },
+    {
+        path: "/detail/:id",
+        element: <Detail />,
     },
     {
         path: "/login",
@@ -17,11 +24,22 @@ const router = createBrowserRouter([
     {
         path: "/admin",
         element: <Admin />,
+        children: [
+            {
+                path: "/admin/index",
+                element: <TableHero />,
+            },
+            {
+                path: "/admin/:id",
+                element: <HeroForm />,
+            },
+            {
+                path: "/admin/create",
+                element: <CreateHero />,
+            },
+        ],
     },
-    {
-        path: "/detail",
-        element: <Detail />,
-    },
+
     {
         path: "*",
         element: <NotFound />,
