@@ -42,12 +42,12 @@ export default function Detail(openDetail) {
                 .get(`/heros/${id}`)
                 .then((data) => {
                     setHero(data.data);
-                    console.log(data);
+                    document.title = data.data.alias;
                 })
                 .catch((err) => {
                     console.log(err);
                 });
-        }, []);
+        }, [id]);
     }
 
     return (

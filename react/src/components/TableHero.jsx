@@ -22,7 +22,6 @@ export default function TableHero() {
 
     return (
         <>
-            {" "}
             <div className="mb-4">
                 <Button
                     disableElevation

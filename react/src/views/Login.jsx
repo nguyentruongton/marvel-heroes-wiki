@@ -39,7 +39,7 @@ export default function Login() {
     };
 
     if (token) {
-        navigate("/admin/index");
+        navigate("/admin");
     }
 
     return (

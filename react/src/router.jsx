@@ -26,7 +26,7 @@ const router = createBrowserRouter([
         element: <Admin />,
         children: [
             {
-                path: "/admin/index",
+                index: "/admin",
                 element: <TableHero />,
             },
             {

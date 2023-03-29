@@ -20,7 +20,7 @@ export default function CreateHero() {
         await axiosClient
             .post(`/heros`, hero)
             .then(() => {
-                navigate("/admin/index");
+                navigate("/admin");
             })
             .catch((err) => {
                 const response = err.response;
@@ -74,7 +74,7 @@ export default function CreateHero() {
                     className="rounded-full normal-case"
                     variant="contained"
                     color="error"
-                    onClick={() => navigate("/admin/index")}
+                    onClick={() => navigate("/admin")}
                 >
                     Hủy bỏ
                 </Button>

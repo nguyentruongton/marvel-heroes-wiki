@@ -7,15 +7,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreHeroRequest;
 use App\Http\Requests\UpdateHeroRequest;
 use App\Http\Resources\HeroResource;
+use GuzzleHttp\Psr7\Request;
 
 class HeroController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
+
     public function index()
     {
-        return HeroResource::collection(Hero::query()->orderBy('id', 'desc')->paginate(9));
+        return HeroResource::collection(Hero::all()->sortByDesc('id'));
+        // return HeroResource::collection(Hero::query()->orderBy('id', 'desc')->paginate(3));
     }
 
     /**

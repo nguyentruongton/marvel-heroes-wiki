@@ -8,6 +8,7 @@ import Typography from "@mui/material/Typography";
 import InputBase from "@mui/material/InputBase";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import { Link } from "@mui/material";
 
 const Search = styled("div")(({ theme }) => ({
     position: "relative",
@@ -51,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-export default function SearchAppBar() {
+export default function SearchAppBar({ onChange, value }) {
     return (
         <Box sx={{ flexGrow: 1 }}>
             <AppBar elevation={0} className="bg-vividRed" position="static">
@@ -65,13 +66,20 @@ export default function SearchAppBar() {
                             display: { xs: "none", sm: "block" },
                         }}
                     >
-                        MCU Hero Wiki
+                        <Link
+                            className="cursor-pointer no-underline text-white"
+                            to="/"
+                        >
+                            MCU Hero Wiki
+                        </Link>
                     </Typography>
                     <Search>
                         <SearchIconWrapper>
                             <SearchIcon />
                         </SearchIconWrapper>
                         <StyledInputBase
+                            onChange={onChange}
+                            value={value}
                             placeholder="Tìm kiếm"
                             inputProps={{ "aria-label": "search" }}
                         />

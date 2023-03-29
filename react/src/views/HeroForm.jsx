@@ -35,7 +35,7 @@ export default function HeroForm() {
         await axiosClient
             .put(`/heros/${hero.id}`, hero)
             .then(() => {
-                navigate("/admin/index");
+                navigate("/admin");
             })
             .catch((err) => {
                 const response = err.response;
@@ -93,7 +93,7 @@ export default function HeroForm() {
                     className="rounded-full normal-case"
                     variant="contained"
                     color="error"
-                    onClick={() => navigate("/admin/index")}
+                    onClick={() => navigate("/admin")}
                 >
                     Hủy bỏ
                 </Button>
