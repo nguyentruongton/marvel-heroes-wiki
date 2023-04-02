@@ -1,69 +1,132 @@
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Button from "@mui/material/Button";
+import { useState, useEffect } from "react";
 import Card from "@mui/material/Card";
-import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
-import Link from "@mui/material/Link";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import logoMCU from "../assets/images/MCU.png";
-
-const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-
-function Copyright(props) {
-    return (
-        <Typography
-            variant="body2"
-            color="text.secondary"
-            align="center"
-            {...props}
-        >
-            {"Copyright © "}
-            <Link
-                className="no-underline hover:underline"
-                color="inherit"
-                href="/"
-            >
-                MCU Hero Wiki
-            </Link>{" "}
-            {new Date().getFullYear()}
-            {"."}
-        </Typography>
-    );
-}
+import SearchAppBar from "../components/SearchAppBar";
+import Footer from "../components/Footer";
+import { Navigate, useNavigate } from "react-router-dom";
+import { useStateContext } from "../contexts/ContextProvider";
+import Pagination from "@mui/material/Pagination";
+import axiosClient from "../axios-client";
+import { Box, Stack, Button } from "@mui/material";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const theme = createTheme();
 
 export default function Home() {
+    const navigate = useNavigate();
+    const [heros, setHeros] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        getHeros();
+        document.title = "MCU Hero Wiki";
+    }, []);
+
+    const getHeros = async () => {
+        // setLoading(true);
+        await axiosClient
+            .get("/heros")
+            .then(({ data }) => {
+                // setLoading(false);
+                setHeros(data.data);
+            })
+            .catch(() => {
+                // setLoading(false);
+            });
+    };
+
+    const [noOfElement, setNoOfElement] = useState(3);
+    const slice = heros.slice(0, noOfElement);
+    const loadMore = () => {
+        setNoOfElement(noOfElement + noOfElement);
+    };
+
+    const [filteredData, setFilteredData] = useState([]);
+    const [wordEntered, setWordEntered] = useState("");
+    const handleFilter = (event) => {
+        const searchWord = event.target.value;
+        setWordEntered(searchWord);
+        const newFilter = heros.filter((value) => {
+            return value.alias.toLowerCase().includes(searchWord.toLowerCase());
+        });
+        setFilteredData(newFilter);
+    };
+
+    const renderPaging = (
+        <>
+            {slice.map((hero) => (
+                <Grid item key={hero.id} xs={12} sm={6} md={4}>
+                    <Card
+                        className="flex flex-col h-full rounded-xl hover:rounded-3xl duration-150 ease-linear transition-all cursor-pointer"
+                        variant="outlined"
+                        onClick={() => navigate(`/detail/${hero.id}`)}
+                    >
+                        <CardMedia
+                            component="img"
+                            image={hero.avatar}
+                            alt="avatar-hero"
+                        />
+                        <CardContent sx={{ flexGrow: 1 }}>
+                            <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="h2"
+                            >
+                                {hero.alias}
+                            </Typography>
+                            <Typography className="truncate">
+                                {hero.description}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            ))}
+        </>
+    );
+
+    const renderSearch = (
+        <>
+            {filteredData.map((hero) => (
+                <Grid item key={hero.id} xs={12} sm={6} md={4}>
+                    <Card
+                        className="flex flex-col h-full rounded-xl hover:rounded-3xl duration-150 ease-linear transition-all cursor-pointer"
+                        variant="outlined"
+                        onClick={() => navigate(`/detail/${hero.id}`)}
+                    >
+                        <CardMedia
+                            component="img"
+                            image={hero.avatar}
+                            alt="avatar-hero"
+                        />
+                        <CardContent sx={{ flexGrow: 1 }}>
+                            <Typography
+                                gutterBottom
+                                variant="h5"
+                                component="h2"
+                            >
+                                {hero.alias}
+                            </Typography>
+                            <Typography className="truncate">
+                                {hero.description}
+                            </Typography>
+                        </CardContent>
+                    </Card>
+                </Grid>
+            ))}
+        </>
+    );
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <AppBar position="relative">
-                <Toolbar>
-                    <img
-                        className="mr-4"
-                        src={logoMCU}
-                        alt="mcu-hero-wiki-logo"
-                        width={48}
-                    />
-                    {/* <Typography variant="h6" color="inherit">
-                        MCU Hero Wiki
-                    </Typography> */}
-                    <div className="text-xl font-googleSansMedium flex items-center">
-                        MCU Hero Wiki
-                    </div>
-                </Toolbar>
-            </AppBar>
+            <SearchAppBar onChange={handleFilter} value={wordEntered} />
             <main>
-                {/* Hero unit */}
                 <Box
                     sx={{
                         bgcolor: "background.paper",
@@ -71,7 +134,7 @@ export default function Home() {
                         pb: 6,
                     }}
                 >
-                    <Container maxWidth="sm">
+                    <Container maxWidth="md">
                         <Typography
                             component="h1"
                             variant="h2"
@@ -79,93 +142,55 @@ export default function Home() {
                             color="text.primary"
                             gutterBottom
                         >
-                            Album layout
+                            Marvel Cinematic Universe Hero Wiki
                         </Typography>
                         <Typography
-                            variant="h5"
-                            align="center"
+                            variant="body1"
+                            align="justify"
                             color="text.secondary"
                             paragraph
                         >
-                            Something short and leading about the collection
-                            below—its contents, the creator, etc. Make it short
-                            and sweet, but not too short so folks don&apos;t
-                            simply skip over it entirely.
+                            Marvel Cinematic Universe Hero Wiki là một trang web
+                            chuyên về các phim của Marvel, bao gồm cả các bộ
+                            phim chiếu rạp và các series truyền hình của Marvel.
+                            Trang web cung cấp thông tin chi tiết về các nhân
+                            vật, diễn viên, đạo diễn, cốt truyện, sản xuất và
+                            các chi tiết khác liên quan đến Marvel Cinematic
+                            Universe. Ngoài ra, trang web cũng cập nhật những
+                            tin tức mới nhất về các bộ phim và series của
+                            Marvel, cũng như đánh giá và nhận xét về chất lượng
+                            của chúng. Nếu bạn là một fan của Marvel và muốn tìm
+                            hiểu thêm về MCU, thì Marvel Cinematic Universe Hero
+                            Wiki chắc chắn là một nguồn tài nguyên hữu ích cho
+                            bạn.
                         </Typography>
-                        <Stack
-                            sx={{ pt: 4 }}
-                            direction="row"
-                            spacing={2}
-                            justifyContent="center"
-                        >
-                            <Button variant="contained">
-                                Main call to action
-                            </Button>
-                            <Button variant="outlined">Secondary action</Button>
-                        </Stack>
                     </Container>
                 </Box>
-                <Container sx={{ py: 8 }} maxWidth="md">
-                    {/* End hero unit */}
+                <Container sx={{ py: 4 }} maxWidth="md">
                     <Grid container spacing={4}>
-                        {cards.map((card) => (
-                            <Grid item key={card} xs={12} sm={6} md={4}>
-                                <Card
-                                    sx={{
-                                        height: "100%",
-                                        display: "flex",
-                                        flexDirection: "column",
-                                    }}
-                                >
-                                    <CardMedia
-                                        component="img"
-                                        sx={{
-                                            // 16:9
-                                            pt: "56.25%",
-                                        }}
-                                        image="https://source.unsplash.com/random"
-                                        alt="random"
-                                    />
-                                    <CardContent sx={{ flexGrow: 1 }}>
-                                        <Typography
-                                            gutterBottom
-                                            variant="h5"
-                                            component="h2"
-                                        >
-                                            Heading
-                                        </Typography>
-                                        <Typography>
-                                            This is a media card. You can use
-                                            this section to describe the
-                                            content.
-                                        </Typography>
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button size="small">View</Button>
-                                        <Button size="small">Edit</Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))}
+                        {wordEntered === "" ? renderPaging : renderSearch}
                     </Grid>
                 </Container>
+                {/* Phân trang */}
+                {heros.length > noOfElement ? (
+                    <div className="flex justify-center align-center mb-10">
+                        {/* <Pagination
+                        count={total}
+                        page={page}
+                        onChange={handleChangePage}
+                    /> */}
+                        <Button
+                            className="rounded-full normal-case border-vividRed text-vividRed hover:bg-vividRed hover:text-white"
+                            variant="outlined"
+                            startIcon={<ExpandMoreIcon />}
+                            onClick={loadMore}
+                        >
+                            Xem thêm
+                        </Button>
+                    </div>
+                ) : null}
             </main>
-            {/* Footer */}
-            <Box sx={{ bgcolor: "background.paper", p: 6 }} component="footer">
-                <Typography variant="h6" align="center" gutterBottom>
-                    Footer
-                </Typography>
-                <Typography
-                    variant="subtitle1"
-                    align="center"
-                    color="text.secondary"
-                    component="p"
-                >
-                    Something here to give the footer a purpose!
-                </Typography>
-                <Copyright />
-            </Box>
-            {/* End footer */}
+            <Footer />
         </ThemeProvider>
     );
 }

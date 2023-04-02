@@ -4,6 +4,9 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
     theme: {
         extend: {
+            colors: {
+                vividRed: "#F0131E",
+            },
             fontFamily: {
                 googleSansThin: ["GoogleSans-Thin", "Roboto", "san-serif"],
                 googleSansLight: ["GoogleSans-Light", "Roboto", "san-serif"],

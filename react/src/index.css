@@ -10,3 +10,10 @@
 * {
   font-family: GoogleSans-Regular !important;
 }
+
+.limit-text {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 1280px;
+}
