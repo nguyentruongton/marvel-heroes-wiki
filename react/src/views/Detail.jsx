@@ -74,7 +74,7 @@ export default function Detail(openDetail) {
                 <Box
                     sx={{
                         display: "flex",
-                        gap: "40px",
+                        gap: "20px",
                     }}
                 >
                     <img src={hero.avatar} alt="avatar" width={400} />
